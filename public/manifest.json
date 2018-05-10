@@ -1,0 +1,32 @@
+{
+  "name": "TicTacToe PWA",
+  "short_name": "T3-pwa",
+  "icons": [{
+    "src": "icons/icon5.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    }, {
+      "src": "icons/icon3.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    }, {
+      "src": "icons/icon4.png",
+      "sizes": "152x152",
+      "type": "image/png"
+    }, {
+      "src": "icons/icon2.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon1.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/index.html",
+  "gcm_sender_id": "",
+  "display": "standalone",
+  "background_color": "#cea0f1",
+  "theme_color": "#cea0f1"
+}
