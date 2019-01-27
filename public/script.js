@@ -16,6 +16,22 @@
 			painted[l] = false;
 			content[l]='';
 			}
+
+		}
+
+		function changeCpuState() {
+			var cpu = document.getElementsByClassName("cpu")[0];
+			if(cpu.classList.contains("off")) {
+				cpu.classList.remove("off");
+				cpu.classList.add("on");
+				cpu.innerHTML = "ON";
+				//window.location.reload();
+			}
+			else {
+				cpu.classList.remove("on");
+				cpu.classList.add("off");
+				cpu.innerHTML = "OFF";
+			}
 		}
 
 		//start the game funk
@@ -27,18 +43,23 @@
 			if(painted[canvasNumber-1] ==false){
 				if(turn%2==0){
 					cxt.beginPath();
-					cxt.moveTo(0,0);
-					cxt.lineTo(50,50);
-					cxt.moveTo(50,0);
-					cxt.lineTo(0,50);
+					cxt.lineWidth = 5;
+					cxt.moveTo(5,5);
+					cxt.lineTo(45,45);
+					cxt.moveTo(45,5);
+					cxt.lineTo(5,45);
 					cxt.stroke();
 					cxt.closePath();
+					// var img = new Image;
+					// img.src = "images/cross.png";
+					// cxt.drawImage(img,5,5);
 					content[canvasNumber-1] = 'X';
 				}
 
 				else{
 					cxt.beginPath();
-					cxt.arc(25,25,25,0,Math.PI*2,true);
+					cxt.lineWidth = 5;
+					cxt.arc(25,25,21,0,Math.PI*2,true);
 					cxt.stroke();
 					cxt.closePath();
 					content[canvasNumber-1] = 'O';
