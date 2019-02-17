@@ -52,6 +52,7 @@
 					cxt.stroke();
 					cxt.closePath();
 					content[canvasNumber-1] = 'X';
+
 					
 					if(cpu.classList.contains("on")) {
 						// for the X who played before
@@ -61,8 +62,17 @@
 						turn++
 						checkForWinners(content[canvasNumber-1]);
 						if(squaresFilled==9){
-							alert("THE GAME IS OVER!");
-							location.reload(true);
+							swal({
+								title: "Game Over",
+								text: "Want to try again?",
+								buttons: {
+									no: false,
+									confirm: "Yes"
+								}
+							}).then( function(e) {
+								if(e)
+								location.reload(true);
+							});
 						}
 
 						//cpu turn
@@ -82,8 +92,17 @@
 						checkForWinners(content[move-1]);
 
 						if(squaresFilled==9){
-							alert("THE GAME IS OVER!");
-							location.reload(true);
+							swal({
+								title: "Game Over!",
+								text: "Want to try again?",
+								buttons: {
+									no: false,
+									confirm: "Yes"
+								}
+							}).then( function(e) {
+								if(e)
+								location.reload(true);
+							});
 						}
 						return;
 					}
@@ -104,13 +123,22 @@
 				checkForWinners(content[canvasNumber-1]);
 
 				if(squaresFilled==9){
-					alert("THE GAME IS OVER!");
-					location.reload(true);
+					swal({
+						title: "Game Over",
+						text: "Want to try again?",
+						buttons: {
+							no: false,
+							confirm: "Yes"
+						}
+					}).then( function(e) {
+						if(e)
+						location.reload(true);
+					});
 				}
 			
 			}
 			else{
-				alert("THAT SPACE IS ALREADY OCCUPIED");
+				swal("Oops!","The space is already occupied","error");
 			}
 
 		}
@@ -130,18 +158,19 @@
 		function checkForWinners(symbol){
 			for(var a = 0; a < winningCombinations.length; a++){
 			if(content[winningCombinations[a][0]]==symbol&&content[winningCombinations[a][1]]==	symbol&&content[winningCombinations[a][2]]==symbol){
-				alert(symbol+ " WON!");
-				playAgain();
+				swal({
+					title: symbol+" won the game!",
+					text: "Want to try again?",
+					buttons: {
+						no: false,
+						confirm: "Yes"
+					}
+				}).then( function(e) {
+					if(e)
+					location.reload(true);
+				});
 			}
 			}
-		}
-
-		function playAgain(){
-			y=confirm("PLAY AGAIN?");
-			if(y==true){
-				location.reload(true);
-			}
-
 		}
 
 //------minimax algorithm------------------------------------------------------//
@@ -164,7 +193,6 @@
 	}
 
 	function minmax(content, depth, isMax) {
-		console.log("depth is: "+depth);
 		var score = evaluate(content);
 		if(score == 10)
 			return score;
