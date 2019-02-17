@@ -1,4 +1,6 @@
 		var painted;
+		var Xwin = 0;
+		var Owin = 0;
 		var content;
 		var winningCombinations;
 		var turn = 0;
@@ -71,7 +73,7 @@
 								}
 							}).then( function(e) {
 								if(e)
-								location.reload(true);
+								clearCanvas();
 							});
 						}
 
@@ -101,7 +103,7 @@
 								}
 							}).then( function(e) {
 								if(e)
-								location.reload(true);
+								clearCanvas();
 							});
 						}
 						return;
@@ -132,7 +134,7 @@
 						}
 					}).then( function(e) {
 						if(e)
-						location.reload(true);
+						clearCanvas();
 					});
 				}
 			
@@ -167,8 +169,17 @@
 					}
 				}).then( function(e) {
 					if(e)
-					location.reload(true);
+					clearCanvas();
 				});
+				if(symbol=='X') {
+					console.log("x won")
+					Xwin++;
+					document.getElementById("xResult").innerHTML = Xwin;
+				}
+				else {
+					Owin++;
+					document.getElementById("oResult").innerHTML = Owin;
+				}
 			}
 			}
 		}
@@ -254,7 +265,7 @@
 		if(content[2]==content[4] && content[4]==content[6]) {
 			if(content[2]=='O')
 				return +10;
-			else if(content[0]=='X')
+			else if(content[2]=='X')
 				return -10;
 		}
 		//for a no win (tie)

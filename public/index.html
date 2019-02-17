@@ -26,8 +26,9 @@
 		</header>
 		<div class="app">
 			<div class="fleks" id="controls">
-				<label>CPU</label>
+				<div class="cpu-container">CPU
 				<button class="cpu off" onclick=changeCpuState();>OFF</button>
+				</div>
 			</div>
 			<div class="fleks" id ="box">
 				<canvas id = "canvas1"  width="50" height="50" onclick="canvasClicked(1)"></canvas>
@@ -41,6 +42,16 @@
 				<canvas id = "canvas9"  width="50" height="50" onclick="canvasClicked(9)"></canvas>
 			</div>
 			<div class="fleks" id="result">
+				<table>
+					<tr>
+						<th>Player X</th>
+						<th>Player O</th>
+					</tr>
+					<tr>
+						<td id="xResult">0</td>
+						<td id="oResult">0</td>
+					</tr>
+				</table>
 
 			</div>
 		</div>
