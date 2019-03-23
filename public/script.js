@@ -21,19 +21,25 @@
 
 		function changeCpuState() {
 			var cpu = document.getElementsByClassName("cpu")[0];
+			document.getElementById("xResult").innerHTML = "0";
+			document.getElementById("oResult").innerHTML = "0";
+			Xwin = 0; 
+			Owin = 0;
 			if(cpu.classList.contains("off")) {
 				cpu.classList.remove("off");
 				cpu.classList.add("on");
 				cpu.innerHTML = "ON";
-				//window.location.reload();
+				document.getElementsByClassName('mp')[0].classList.add('disable');
 				clearCanvas();
 			}
 			else {
 				cpu.classList.remove("on");
 				cpu.classList.add("off");
 				cpu.innerHTML = "OFF";
+				document.getElementsByClassName('mp')[0].classList.remove('disable');
 				clearCanvas();
 			}
+
 		}
 
 		//start the game onclick
@@ -282,4 +288,67 @@
 	}	
 
 //------minimax algorithm ends----------------------------------------------------//
-		
+
+//------normal event handlers starts----------------------------------------------------------//
+
+
+function changeVisibility(node) {
+	let x = document.getElementById(node);
+	if(x.classList.contains('invisible')) {
+		x.classList.add('visible');
+		x.classList.remove('invisible');
+	}
+	else {
+		x.classList.add('invisible');
+		x.classList.remove('visible');
+	}
+}
+
+function changeMultiplayerState() {
+	//disable cpu buttons and canvas(playground)
+	let box = document.getElementById('box');
+	let mp = document.getElementsByClassName('mp')[0];
+	if(mp.innerHTML == "OFF") {
+		swal({
+			closeOnClickOutside: false,
+			closeOnEsc: false,
+			content: {
+			  element: "input",
+			  attributes: {
+				placeholder: "Type your avatar name",
+				required: true
+			  },
+			},
+		  }).then(function(value) {
+			  if(!value) {
+				swal("Oops!","You need to give an avatar name","error");
+				return false;
+			  } else {
+				  console.log(value);
+				  return true;
+			  }
+		  }).then(function(e) {
+			console.log(e);
+			if(e) {
+			clearCanvas();
+			document.getElementById("xResult").innerHTML = "0";
+			document.getElementById("oResult").innerHTML = "0";
+			box.classList.add('disable');
+			mp.classList.replace('off', 'on');
+			mp.innerHTML = "ON";
+			document.getElementsByClassName('cpu')[0].classList.add('disable');
+			}
+		  });
+	} 
+	else {
+		box.classList.remove('disable');
+		mp.classList.replace('on', 'off');
+		mp.innerHTML = "OFF";
+		document.getElementsByClassName('cpu')[0].classList.remove('disable');
+	}
+
+
+	//popup online div and pop-down controls div
+
+	//start sending request to server
+}

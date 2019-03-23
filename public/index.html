@@ -21,16 +21,35 @@
     </script>
 	</head>
 	<body>
+
 		<header>
-			<h2 class="heading">PWA TIC TAC TOE</h2>
-		</header>
-		<div class="app">
-			<div class="fleks" id="controls">
-				<div class="cpu-container">CPU
-				<button class="cpu off" onclick=changeCpuState();>OFF</button>
+			<div class="heading">
+					<div class="gearIcon" onclick="changeVisibility('controls')"></div> 
+					<p>PWA TIC TAC TOE</p>
+					<div class="onlineIcon" onclick="changeVisibility('online')"></div>
+			</div>
+
+			<div id="controls" class="invisible">
+				<div class="container">CPU
+					<button class="cpu off" onclick=changeCpuState();>OFF</button>
+				</div>
+				<div class="container">Multiplayer
+					<button class="mp off" onclick="changeMultiplayerState();">OFF</button>
 				</div>
 			</div>
-			<div class="fleks" id ="box">
+
+			<div id="online" class="invisible">
+				<ul>
+					<li>Linda</li>
+					<li>Bob</li>
+					<li>Alice</li>
+				</ul>
+			</div>
+
+		</header>
+
+		<div class="app">
+			<div id ="box">
 				<canvas id = "canvas1"  width="50" height="50" onclick="canvasClicked(1)"></canvas>
 				<canvas id = "canvas2"  width="50" height="50" onclick="canvasClicked(2)"></canvas>
 				<canvas id = "canvas3"  width="50" height="50" onclick="canvasClicked(3)"></canvas><br/>
@@ -41,7 +60,9 @@
 				<canvas id = "canvas8"  width="50" height="50" onclick="canvasClicked(8)"></canvas>
 				<canvas id = "canvas9"  width="50" height="50" onclick="canvasClicked(9)"></canvas>
 			</div>
-			<div class="fleks" id="result">
+		</div>
+
+		<div id="result">
 				<table>
 					<tr>
 						<th>Player X</th>
@@ -52,9 +73,8 @@
 						<td id="oResult">0</td>
 					</tr>
 				</table>
-
-			</div>
 		</div>
+
 	<footer>
 	    <p>made by himanshu negi</p>
 	</footer>
