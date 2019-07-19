@@ -246,7 +246,7 @@ io.on('connection', function(socket) {
 
 //handle errors
 process.on('uncaughtException', function(error) {
-    socket.emit('serverCrashed');
+    socket.emit('serverError', {msg: "crashed due to some error"});
     console.log(error);
 });
 
