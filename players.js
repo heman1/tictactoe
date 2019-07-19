@@ -1,4 +1,4 @@
-const players = [
+var players = [
     
 ];
 

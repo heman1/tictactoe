@@ -1,26 +1,45 @@
 const express = require('express');
 const router = express.Router(); //interface
-const uuid = require('uuid');
 const players = require('../../players');
+
+
+//create a player
+// router.post('/:name', (req, res)=> {
+//     console.log(req.params.name+ " with sid "+ socket.id);
+//     const newPlayer = {
+//         id: uuid.v4(),
+//         sid: socket.id,
+//         name: req.params.name,
+//         gameId: null,
+//         opponent: null,
+//         status: 'waiting'
+//     }
+//     players.push(newPlayer);
+//     res.json(newPlayer);
+// });
+
+//join request
+// router.post('/join/:id', (req, res)=> {
+//     // send prompt to player2(url id)
+//     // on successful validation -> change the status and opponents of both the players
+//     // initialize a room and game id
+//     players.forEach(player => {
+//         if(player.id === req.params.id) {
+//             console.log(player.sid);
+//             socket.broadcast.to(player.sid).emit( 'gameRequest', { name : req.body.playerName } );
+//         }
+//     });
+
+
+// });
+
+
 
 //read all players
 router.get('/', (req, res)=> {
     res.json(players);
 });
 
-//creat a player
-router.post('/:name', (req, res)=> {
-    console.log(req.params.name);
-    const newPlayer = {
-        id: uuid.v4(),
-        name: req.params.name,
-        gameId: null,
-        opponent: null,
-        status: 'waiting'
-    }
-    players.push(newPlayer);
-    res.json(players);
-});
 
 
 //update player details -> gameId, opponent, status

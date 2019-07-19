@@ -1,6 +1,5 @@
-// using socket object 
-const socketForClient = io.connect('http://localhost:2121');
 //initializing global variables
+const socketForClient = io.connect('http://localhost:2121'); // using socket object 
 var painted;
 var Xwin = 0;
 var Owin = 0;
@@ -10,6 +9,15 @@ var turn = 0;
 var theCanvas;
 var c,w,y,cxt;
 var squaresFilled = 0;
+
+//DOM Query
+var gameMode = document.getElementById('game_mode');
+var players = document.getElementById('players');
+var clientStatus = document.getElementById('client_status');
+var showPlayerName = document.getElementById('player_name');
+var cpu = document.getElementsByClassName("cpu")[0];
+var box = document.getElementById('box');
+var mp = document.getElementsByClassName('mp')[0];
 
 //setting up game on start
 window.onload=function(){
@@ -21,20 +29,69 @@ window.onload=function(){
 		painted[l] = false;
 		content[l]= '_';
 	}
+	gameMode.innerHTML = "SOLO MODE";
+	sessionStorage.clear();
+	refreshList();
 }
+
+//==========EVENT LISTENERS===========================================//
 
 //check for offline/online status
 window.addEventListener('online', ()=> {
-	console.log('you are offline');
+	console('you are offline');
+});
+window.addEventListener('offline', ()=> {
+	alert('you are offline');
 });
 
-window.addEventListener('offline', ()=> {
-	console.log('connected to internet');
+//when live players are clicked
+players.addEventListener('click', (e)=> {
+	var player2 = e.target.getAttribute("value");
+	var player1 = sessionStorage.getItem("uid");
+	var player1Status = sessionStorage.getItem("status");
+	if(player1==null) {
+		swal("Oops!","Select multiplayer option first","error");
+	} else if(player1===player2) {
+		swal("Oops!","You cannot play with yourself", "error");
+	} else if(player1Status=='playing') {
+		swal("Oops!","End the current game to play with others", "error");
+	} else if(e.target.classList.contains('p')) {
+		swal("Oops!", "The user is busy playing with someone else", "error");
+	} else if(e.target.classList.contains('w')) {
+		console.log("you can play together");
+		var obj = {
+			playerId: player1,
+			playerName: sessionStorage.getItem("name"),
+			opponentId: player2
+		}
+
+		swal({
+			text: 'Do you confirm!',
+			button: {
+			  text: "send now!",
+			  closeModal: false,
+			},
+		  })
+		  .then(name => {
+			if (!name) throw null;
+			socketForClient.emit('joinGame', obj, (response)=> {        //joinGame emitted
+				if(response) {
+					swal("Matched!","player accepted your request", "success");
+					changeVisibility('online');
+				}
+				else
+					swal("Oops!","your request was rejected", "error");
+			})
+		  });		
+	} else {
+		console.log("wrong selection");
+	}
 });
+
+//===============UTILITY FUNCTIONS============================//
 
 //if cpu state changes (on/off)
 function changeCpuState() {
-	var cpu = document.getElementsByClassName("cpu")[0];
 	document.getElementById("xResult").innerHTML = "0";
 	document.getElementById("oResult").innerHTML = "0";
 	Xwin = 0; 
@@ -43,6 +100,7 @@ function changeCpuState() {
 		cpu.classList.remove("off");
 		cpu.classList.add("on");
 		cpu.innerHTML = "ON";
+		gameMode.innerHTML = "CPU MODE";
 		document.getElementsByClassName('mp')[0].classList.add('disable');
 		clearCanvas();
 	}
@@ -50,19 +108,73 @@ function changeCpuState() {
 		cpu.classList.remove("on");
 		cpu.classList.add("off");
 		cpu.innerHTML = "OFF";
+		gameMode.innerHTML = "SOLO MODE";
 		document.getElementsByClassName('mp')[0].classList.remove('disable');
 		clearCanvas();
 	}
-
 }
 
+// resetting the game by clearing complete canvas
+function clearCanvas() {
+	for(var i=1; i<=9; i++) {
+		c = document.getElementById("canvas"+i);
+		ctx = c.getContext("2d");
+		ctx.clearRect(0, 0, c.width, c.height);
+		painted[i-1] = false;
+		content[i-1]='_';
+	}
+	squaresFilled = 0;
+	turn = 0;
+}
+
+//check for winner in multiplayer
+function checkForTheWinner(symbol){
+	for(var a = 0; a < winningCombinations.length; a++) {
+		if(content[winningCombinations[a][0]]==symbol&&content[winningCombinations[a][1]]==	symbol&&content[winningCombinations[a][2]]==symbol){
+			return true;
+		}
+	}
+	return false;
+}
+
+//check if we got any winner in offline(solo/cpu)
+function checkForWinners(symbol){
+	for(var a = 0; a < winningCombinations.length; a++) {
+		if(content[winningCombinations[a][0]]==symbol&&content[winningCombinations[a][1]]==	symbol&&content[winningCombinations[a][2]]==symbol){
+			swal({
+				title: symbol+" won the game!",
+				text: "Want to try again?",
+				buttons: {
+					no: false,
+					confirm: "Yes"
+				}
+			}).then( function(e) {
+				if(e)
+				clearCanvas();
+			});
+			if(symbol=='X') {
+				console.log("x won")
+				Xwin++;
+				document.getElementById("xResult").innerHTML = Xwin;
+			}
+			else {
+				Owin++;
+				document.getElementById("oResult").innerHTML = Owin;
+			}
+		}
+	}
+}
+
+
 //responding when box canvas is clicked
-function canvasClicked(canvasNumber){
+function canvasClicked(canvasNumber) {
 	theCanvas = "canvas"+canvasNumber;
 	c = document.getElementById(theCanvas);
 	cxt = c.getContext("2d");
-	var cpu = document.getElementsByClassName("cpu")[0];
-
+	if(sessionStorage.getItem("status")=='playing' && !(box.classList.contains('disable')) ) {
+		mHandler(canvasNumber, cxt);
+		return;
+	}
 	if(painted[canvasNumber-1] ==false) {
 		if(turn%2==0) {
 			cxt.beginPath();
@@ -166,152 +278,17 @@ function canvasClicked(canvasNumber){
 
 }
 
-// resetting the game by clearing complete canvas
-function clearCanvas() {
-	for(var i=1; i<=9; i++) {
-		c = document.getElementById("canvas"+i);
-		ctx = c.getContext("2d");
-		ctx.clearRect(0, 0, c.width, c.height);
-		painted[i-1] = false;
-		content[i-1]='_';
-	}
-	squaresFilled = 0;
-	turn = 0;
-}
 
-//check if we got any winner
-function checkForWinners(symbol){
-	for(var a = 0; a < winningCombinations.length; a++) {
-		if(content[winningCombinations[a][0]]==symbol&&content[winningCombinations[a][1]]==	symbol&&content[winningCombinations[a][2]]==symbol){
-			swal({
-				title: symbol+" won the game!",
-				text: "Want to try again?",
-				buttons: {
-					no: false,
-					confirm: "Yes"
-				}
-			}).then( function(e) {
-				if(e)
-				clearCanvas();
-			});
-			if(symbol=='X') {
-				console.log("x won")
-				Xwin++;
-				document.getElementById("xResult").innerHTML = Xwin;
-			}
-			else {
-				Owin++;
-				document.getElementById("oResult").innerHTML = Owin;
-			}
-		}
-	}
-}
 
-//------minimax algorithm to find next optimal move-------------------------------------//
-		
-function getOptimalLocation(content) {
-	var bestScore = -1000;
-	var bestMove;
-	for(var i=0; i<9; i++) {
-		if(content[i]=='_') {
-			content[i] = 'O';
-			var n = minmax(content, 0, false);
-			content[i] = '_';
-			if(n>bestScore) {
-				bestScore = n;
-				bestMove = i;
-			}
-		}
-	}
-	return bestMove+1;
-}
+//DOM Query
 
-function minmax(content, depth, isMax) {
-	var score = evaluate(content);
-	if(score == 10)
-		return score;
-	if(score == -10) 
-		return score;
-	if(isMovesLeft(content)==false)
-		return 0;
-	if(isMax) {
-		var best = -1000;
-		for(var i=0; i<9; i++) {
-			if(content[i]=='_') {
-				content[i]='O';
-				best = Math.max(best, minmax(content, depth+1, !isMax));
-				content[i] = '_';
-			}
-		}
-		return best;
-	}
-	else {
-		var best = 1000;
-		for(var i=0; i<9; i++) {
-			if(content[i]=='_') {
-				content[i] = 'X';
-				best = Math.min(best, minmax(content, depth+1, !isMax));
-				content[i] = '_';
-			}
-		}
-		return best;
-	}
-}
-
-function evaluate(content) {
-	//horizontal check
-	for(var row=1; row<=3; row++) {
-		if(content[3*row-3]==content[3*row-2] && content[3*row-2]==content[3*row-1]) {
-			if(content[3*row-3]=='O')
-				return +10;
-			else if(content[3*row-3]=='X')
-				return -10;
-		}
-	}
-	//vertical check
-	for(var col=0; col<3; col++) {
-		if(content[col]==content[col+3] && content[col+3]==content[col+6]) {
-			if(content[col]=='O')
-				return +10;
-			else if(content[col]=='X')
-				return -10;
-		}
-	}
-	//diagnal 1
-	if(content[0]==content[4] && content[4]==content[8]) {
-		if(content[0]=='O')
-			return +10;
-		else if(content[0]=='X')
-			return -10;
-	}
-	//diagnal 2
-	if(content[2]==content[4] && content[4]==content[6]) {
-		if(content[2]=='O')
-			return +10;
-		else if(content[2]=='X')
-			return -10;
-	}
-	//for a no win (tie)
-	return 0;
-}
-	
-function isMovesLeft(content) 
-{ 
-	for (var i = 0; i<9; i++)  
-		if (content[i]=='_') 
-			return true; 
-	console.log("no moves left");
-	return false; 
-}	
-
-//------minimax algorithm ends----------------------------------------------------//
-
-//------normal event handlers starts----------------------------------------------------------//
 
 // utility function to make element visible and invisible
 function changeVisibility(node) {
 	let x = document.getElementById(node);
 	if(x.classList.contains('invisible')) {
+		if(node == 'online')
+			refreshList();
 		x.classList.add('visible');
 		x.classList.remove('invisible');
 	}
@@ -323,8 +300,6 @@ function changeVisibility(node) {
 
 function changeMultiplayerState() {
 	//disable cpu buttons and canvas(playground)
-	let box = document.getElementById('box');
-	let mp = document.getElementsByClassName('mp')[0];
 	var pName= "";
 	if(mp.innerHTML == "OFF") {
 		swal({
@@ -356,9 +331,11 @@ function changeMultiplayerState() {
 				mp.classList.replace('off', 'on');
 				mp.innerHTML = "ON";
 				document.getElementsByClassName('cpu')[0].classList.add('disable');
-				//start sending request to server
-				socketForClient.emit('makeMeOnline', {name: pName});
-				console.log('makeMeOnline emitted');
+				gameMode.innerHTML = "MULTIPLAYER MODE";
+				showPlayerName.innerHTML = pName+',';
+				changeVisibility('controls');
+				socketForClient.emit('createPlayer', pName);
+				console.log('creating new player');
 			  }
 		  });
 	} 
@@ -367,17 +344,82 @@ function changeMultiplayerState() {
 		mp.classList.replace('on', 'off');
 		mp.innerHTML = "OFF";
 		document.getElementsByClassName('cpu')[0].classList.remove('disable');
+		gameMode.innerHTML = "SOLO MODE";
+		showPlayerName.innerHTML = "";
 	}
 
 
 	//popup online div and pop-down controls div
 }
 
-// Listen to server
-var players = document.getElementById('players');
+// handling the game in multiplayer mode
+function mHandler(canvasNumber, cxt) {
+	if(painted[canvasNumber-1] == false) {
+		cxt.beginPath();
+		cxt.lineWidth = 5;
+		cxt.moveTo(5,5);
+		cxt.lineTo(45,45);
+		cxt.moveTo(45,5);
+		cxt.lineTo(5,45);
+		cxt.stroke();
+		cxt.closePath();
+		content[canvasNumber-1] = 'X';
+		painted[canvasNumber-1] = true;
+		squaresFilled++;
+		if( checkForTheWinner(content[canvasNumber-1]) ) {
+			swal({  text: 'You won the game',
+					icon: './images/won.gif',
+					iconSize: '150x120'
+			});
+			socketForClient.emit('gameFinish', { 
+				winner: sessionStorage.getItem('uid'),
+				roomId: sessionStorage.getItem("roomId")
+			});
+			clearCanvas();
+		}
+		if(squaresFilled==9) {
+			swal("Tie","Game is over");
+		} else {
+			socketForClient.emit('swapPlayer', {                    //swapPlayer emitted
+				pos: canvasNumber,
+				player: sessionStorage.getItem("uid"),
+				roomId: sessionStorage.getItem("roomId")
+			});
+		}
+	} else {
+		swal("Oops!", "The space is already occupied", "error");
+	}
+}
 
-socketForClient.on('newPlayer', function(data) {
-	console.log('new player listened');
-	players.insertAdjacentHTML('afterbegin','<li class="player" onclick="connectTo(this)">'+ data.name +'</li>');
-	console.log("added HTML");
-});
+
+
+
+function refreshList() {
+	fetch('http://localhost:2121/api/players')
+	.then( (response)=> {
+		return response.json();
+	}).then( (data)=> {
+		players.innerHTML = "";
+		displayAllPlayers(data);
+	});
+}
+
+function displayAllPlayers(data) {
+	console.log("called"+ data.length);
+	for(var i = 0; i < data.length; i++) {
+		var obj = data[i];
+		var stat = obj.status;
+		var x = stat.slice(0,1);
+		stat = "status_"+ stat.slice(0,1);
+		var htmlContent = `<li class="player ${x}" value="${obj.id}">
+								<p class="name ${x}" value="${obj.id}"> ${obj.name}</p>
+								<p class="${stat} ${x}" value="${obj.id}"> ${obj.status}</p>
+							</li>`
+		players.insertAdjacentHTML('afterbegin', htmlContent);
+	}
+}
+
+
+
+
+
