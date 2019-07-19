@@ -1,5 +1,6 @@
 //initializing global variables
-const socketForClient = io.connect('http://localhost:2121'); // using socket object 
+var PORT = process.env.PORT || 2121;
+const socketForClient = io.connect(`https://tic-tac-toe-pwa.herokuapp.com:${PORT}`); // using socket object 
 var painted;
 var Xwin = 0;
 var Owin = 0;
@@ -395,7 +396,7 @@ function mHandler(canvasNumber, cxt) {
 
 
 function refreshList() {
-	fetch('http://localhost:2121/api/players')
+	fetch('https://tic-tac-toe-pwa.herokuapp.com/api/players')
 	.then( (response)=> {
 		return response.json();
 	}).then( (data)=> {
