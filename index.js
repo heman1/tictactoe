@@ -26,8 +26,8 @@ const logger = (req, res, next)=> {
 }
 app.use(logger);
 
-var PORT = process.env.PORT || 2121
-server.listen(PORT, ()=> console.log('server running on port 2121'));
+var PORT = process.env.PORT || 2121;
+server.listen(PORT, ()=> console.log(`server running on port ${PORT}`));
 
 
 io.on('connection', function(socket) {
