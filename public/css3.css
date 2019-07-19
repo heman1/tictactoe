@@ -247,7 +247,8 @@ li .status_p, li .status_w {
 	border-radius: 5px;
 	border: 6px solid #ffffff;
 	width: 50%;
-	margin: 20px auto 10px auto;
+	margin: 30px auto 10px auto;
+	background: #e2bcff;
 }
 .empty_box p {
 	margin: 0;
@@ -338,6 +339,7 @@ p {
 	#box {
 		width:80%;
 		margin: 30px auto 10px auto;
+		height: 300px;
 	}
 	canvas {
 		width: 50px;
@@ -368,8 +370,7 @@ p {
 		border-radius: 1.5px;
 		border: 3px solid #ffffff;
 		width: 90%;
-		margin: 35px auto 0 auto;
-		height: 300px;
+		margin: 45px auto 0 auto;
 	}
 	.empty_box p {
 		font-size: 14px;
