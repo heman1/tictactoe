@@ -368,7 +368,8 @@ p {
 		border-radius: 1.5px;
 		border: 3px solid #ffffff;
 		width: 90%;
-		margin: 35px auto 10px auto;
+		margin: 35px auto 0 auto;
+		height: 300px;
 	}
 	.empty_box p {
 		font-size: 14px;
