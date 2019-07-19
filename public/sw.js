@@ -30,7 +30,7 @@ self.addEventListener('activate',  event => {
 //or responding with the network if available
 self.addEventListener('fetch', event => {
   event.respondWith(
-    caches.match(event.request, {ignoreSearch:true}).then(
+    caches.match(event.request, {ignoreSearch:false}).then(
         response => {
         return response || fetch(event.request);
     })

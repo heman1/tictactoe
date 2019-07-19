@@ -8,29 +8,68 @@
     <meta name="keywords" content="tictactoe,pwa,PWA,game">
     <meta name="author" content="Himanshu Negi">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Tic Tac Toe PWA</title>
+		<title>PWA Tic Tac Toe</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
 		<link rel="stylesheet" type="text/css" href="css3.css"/>
 		<link rel="manifest" href="manifest.json">
 		<script>
       if('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/sw.js')
-          .then(function() {
-                console.log('Service Worker Registered');
+          .then(function(reg) {
+				console.log('Service Worker Registered');
+				
+				reg.addEventListener('updateFound', ()=> {
+					reg.installing.addEventListener('statechange', ()=> {
+						if(this.state == 'installed') {
+							console.log("there is a new update!!");
+						}
+					})
+				});
+
+				if(reg.waiting) {
+					console.log("got an update!");
+				}
           });
       }
     </script>
 	</head>
 	<body>
+
 		<header>
-			<h2 class="heading">PWA TIC TAC TOE</h2>
-		</header>
-		<div class="app">
-			<div class="fleks" id="controls">
-				<div class="cpu-container">CPU
-				<button class="cpu off" onclick=changeCpuState();>OFF</button>
+			<div class="heading">
+				<div class="icon_back_g">
+					<div class="gearIcon" onclick="changeVisibility('controls')"></div>
+				</div>
+				<div class="game_status">
+					<p id="game_mode"></p>
+				</div>
+				<div class="icon_back_o">
+					<div class="onlineIcon" onclick="changeVisibility('online')"></div>
 				</div>
 			</div>
-			<div class="fleks" id ="box">
+
+			<div id="controls" class="invisible">
+				<div class="container">CPU
+					<button class="cpu off" onclick=changeCpuState();>OFF</button>
+				</div>
+				<div class="container">Multiplayer
+					<button class="mp off" onclick="changeMultiplayerState();">OFF</button>
+				</div>
+			</div>
+
+			<div id="online" class="invisible">
+				<ul id="players">
+				</ul>
+				<div class="refresh_btn" onclick="refreshList()"><p>REFRESH</p></div>
+			</div>
+
+		</header>
+
+		<div class="app">
+			<div class="empty_box">
+					<p id="player_name"></p><p id="client_status">Status Bar</p>
+			</div>
+			<div id ="box">
 				<canvas id = "canvas1"  width="50" height="50" onclick="canvasClicked(1)"></canvas>
 				<canvas id = "canvas2"  width="50" height="50" onclick="canvasClicked(2)"></canvas>
 				<canvas id = "canvas3"  width="50" height="50" onclick="canvasClicked(3)"></canvas><br/>
@@ -41,7 +80,9 @@
 				<canvas id = "canvas8"  width="50" height="50" onclick="canvasClicked(8)"></canvas>
 				<canvas id = "canvas9"  width="50" height="50" onclick="canvasClicked(9)"></canvas>
 			</div>
-			<div class="fleks" id="result">
+		</div>
+
+		<div id="result">
 				<table>
 					<tr>
 						<th>Player X</th>
@@ -52,15 +93,16 @@
 						<td id="oResult">0</td>
 					</tr>
 				</table>
-
-			</div>
 		</div>
+
 	<footer>
 	    <p>made by himanshu negi</p>
 	</footer>
 	
 	<script defer src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
 	<script type="text/javascript" src="script.js"></script>
+	<script type="text/javascript" src="minmaxAlgo.js"></script>
+	<script type="text/javascript" src="socketScript.js"></script>
 
 	</body>
 </html>

@@ -7,40 +7,214 @@ html{
 body {
 	font-family: sans-serif;
 }
-.heading {
-    font-family: sans-serif;
-    font-weight: 600;
-    word-spacing: 4px;
-	color:#6b3e80;
-	text-align: center;
-	font-size: 30px;
-	width: 90%;
-	background: white;
-	margin: 10px auto 30px;
-	box-shadow: 0 10px 30px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
-	padding: 20px;
-	border-radius: 5px;
+
+.visible {
+	display: block;
+}
+.invisible {
+	display: none;
 }
 
-.app {
-	display: flex;
-	flex-wrap: wrap;
-	height: 500px;
+header {
+	position: relative;
 }
-.fleks {
+
+.game_status {
+	position: absolute;
+	transform: translate(50%, -50%);
+	width: 50%;
+}
+.game_status p {
+	color: #6b3e80;
+	font-size: 26px;
+	letter-spacing: 0.5px;
+	margin-top: 80px;
+	margin-bottom: 50px;
+	font-weight: 600;
+}
+.icon_back_g {
+	left: 60px;
+	width: 60px;
+	height: 60px;
+	border-radius: 6px;
+	position: absolute;
+	background-color: #ffffff;
+}
+
+.icon_back_o {
+	width: 60px;
+	height: 60px;
+	border-radius: 6px;
+	position: absolute;
+	background-color: #ffffff;
+	right: 60px;
+}
+
+.gearIcon {
+	background-image: url(./images/gear.png);
+	background-repeat: no-repeat;
+	background-size: cover;
+	width: 50px;
+	height: 50px;
+	margin-top: 5px;
+	display: inline-block;
+	position: absolute;
+	left: 6px;
+}
+
+.gearIcon:hover, .onlineIcon:hover {
+	cursor: pointer;
+	animation: size 0.6s linear;
+}
+@keyframes size {
+	0% {
+		transform: scale(1);
+	}
+	50% {
+		transform: scale(1.2);
+	}
+	100% {
+		transform: scale(1);
+	}
+}
+.onlineIcon {
+	background-image: url(./images/icons8-play-64.png);
+	background-repeat: no-repeat;
+	background-size: cover;
+	width: 40px;
+	height: 40px;
+	margin-top: 5px;
+	display: inline-block;
+	position: absolute;
+	right: 6px;
+	top: 4px;
+}
+
+
+.heading {
+	position: relative;
 	width: 100%;
+	padding-top: 30px;
+	padding-bottom: 30px;
 }
+
+
 #box {
 	width: 60%;
-	height:auto;
-
+	height: 400px;
+	margin: 50px auto 0 auto;
 }
 
 #controls {
+	position: absolute;
+	background: #fff;
+	box-shadow: 1px 5px 6px 0px #d5a5f6;
+	border-radius: 0 0 6px 6px;
 	width: 20%;
+	z-index: 1;
+	top: 85px;
+	left: 60px;
 }
 
-#controls .cpu {
+#online {
+	position: absolute;
+	background: #fff;
+	box-shadow: 1px 5px 6px 0px #d5a5f6;
+	border-radius: 0 0 6px 6px;
+	width: 25%;
+	z-index: 1;
+	top: 85px;
+	right: 60px;
+}
+
+.animate {
+	animation: dropDown 0.3s ease-in;
+	animation-fill-mode: forwards;
+}
+
+#players {
+	overflow-x: auto;
+	max-height: 300px;
+}
+#online ul {
+	list-style-type: none;
+	text-align: left;
+	padding: 10px;
+	margin: 5px;
+}
+
+#online li {
+	padding: 5px;
+	position: relative;
+	margin: 10px 5px 10px 5px;
+	background: #E5E5E5;
+	cursor: pointer;
+	border-radius: 6px;
+}
+
+li .name {
+	margin: 0;
+	padding: 5px;
+	display: inline-block;
+	color: #202020;
+	font-size: 16px;
+}
+
+li .status_p, li .status_w {
+	position: absolute;
+	margin: 0;
+	padding: 5px 25px 5px 5px;
+	right: 0;
+	display: inline-block;
+	color: #202020;
+	font-size: 16px;
+}
+
+.status_p::after, .status_w::after {
+	position: absolute;
+	content: "";
+	top: 10px;
+	right: 10px;
+	width: 8px;
+	height: 8px;
+	border-radius: 4px;
+	background-color: rgb(250, 44, 44);
+}
+
+.status_w::after {
+	background-color: rgb(49, 214, 47);
+}
+
+.refresh_btn {
+	width: 90%;
+	margin: 2px auto 10px auto;
+	height: 40px;
+	border-radius: 4px;
+	background-color: #66EE63;
+}
+
+.refresh_btn p {
+	color: #ffffff;
+	margin: 0;
+	letter-spacing: 0.3px;
+
+}
+
+.refresh_btn:hover {
+	cursor: pointer;
+}
+
+
+
+
+
+.container {
+	margin: 15px 15px 15px 20px;
+	padding: 5px;
+	text-align: left;
+	position: relative;
+}
+#controls .cpu, .mp {
 	width:80px;
 	height: 30px;
 	border: none;
@@ -48,27 +222,37 @@ body {
 	border-radius: 3px;
 	color: #fff;
 	cursor: pointer;
-} 
-
-.cpu-container {
-	padding: 10px;
-	margin: 2px auto;
-	width: 150px;
-	height: 30px;
-	background: #fff;
-	box-shadow: 4px 4px 20px 3px #9d9d9d;
-	border-radius: 3px;
 }
+.container button {
+	position: absolute;
+	right: 0;
+}
+
 
 
 .on {
-	background: rgb(79, 199, 9);
+	background: #74FF82;
+	box-shadow: 1px 3px 6px #66EE63;
 }
 .off {
-	background: rgb(230, 11, 11);
+	background: #FF7474;
+	box-shadow: 1px 3px 6px #EF6262;
 }
 #result {
-	width: 20%;
+	width: 60%;
+	margin: 0 auto 30px auto;
+}
+
+.empty_box {
+	border-radius: 5px;
+	border: 6px solid #ffffff;
+	width: 50%;
+	margin: 20px auto 10px auto;
+}
+.empty_box p {
+	margin: 0;
+	display: inline-block;
+	font-size: 21px;
 }
 
 #result table {
@@ -87,28 +271,53 @@ body {
 canvas{
 	width: 60px;
 	position:relative;
-	-webkit-animation:canvasAnimation 1.5s;
+	animation:canvasAnimation 1.5s;
 	padding: 10px;
 	margin:2px;
-	background-color: #fff;
+	background-color: #ffffff;
 	box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
 	border-radius: 3px; 
 	
 }
 footer {
-    width:98%;
+    width:100%;
 	height:50px;
 	border-radius: 3px;
-    position: fixed;
+    position: relative;
     bottom: 0;
     background: rgb(107, 62, 128);
 }
 p {
+	padding: 10px;
     font-family: sans-serif;
     font-size: 18px;
     color:#fff;
 }
-@-webkit-keyframes canvasAnimation {
+
+.disable {
+	pointer-events: none;
+	cursor: wait;
+}
+
+.swal-button {
+	background-color: #bd79f1;
+	border: 0;
+	box-shadow: 1px 3px 6px rgb(198, 144, 248);
+}
+
+@keyframes dropDown {
+	0% {
+		height: 0;
+	}
+	50% {
+		height: 200px;
+	}
+	100% {
+		height: auto;
+	}
+}
+
+@keyframes canvasAnimation {
 
 	0%   {-webkit-transform:rotate(90deg);left:0px; top:0px;}
 	
@@ -118,11 +327,17 @@ p {
 	#box {
 		width:60%;
 	}
+	#controls {
+		width: 50%;
+	}
+	#online {
+		width: 50%;
+	}
 }
 @media (max-width:520px) {
 	#box {
 		width:80%;
-		margin: 30px auto 30px auto;
+		margin: 30px auto 10px auto;
 	}
 	canvas {
 		width: 50px;
@@ -131,9 +346,33 @@ p {
 	}
 	#controls {
 		width: 100%;
+		left: 0;
+	}
+	#online {
+		width: 100%;
+		right: 0;
 	}
 	#result {
 		width: 100%;
 	}
+	.icon_back_g {
+		left: 0px;
+	}
+	.icon_back_o {
+		right: 0px;
+	}
+	.game_status p {
+		font-size: 18px;
+	}
+	.empty_box {
+		border-radius: 1.5px;
+		border: 3px solid #ffffff;
+		width: 90%;
+		margin: 35px auto 10px auto;
+	}
+	.empty_box p {
+		font-size: 14px;
+	}
+	
 }
 
