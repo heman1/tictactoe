@@ -87,7 +87,9 @@ socketForClient.on('lost', (looser)=> {
 	console.log('clearing stuff');
 	clientStatus.innerHTML = "select player from the live icon to play"
 	refreshList();
-	if(looser.uid === sessionStorage.getItem("uid")) {
+	if(looser.uid == null) {
+		swal("Tie", "The game was a tie", "info");
+	}else if(looser.uid === sessionStorage.getItem("uid")) {
 		swal({  text: 'You lost the game',
 					icon: './images/lost.gif',
 					iconSize: '150x100'

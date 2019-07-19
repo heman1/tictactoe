@@ -1,4 +1,5 @@
 //initializing global variables
+//const socketForClient = io.connect('http://localhost:2121');
 const socketForClient = io.connect('https://tic-tac-toe-pwa.herokuapp.com'); // using socket object 
 var painted;
 var Xwin = 0;
@@ -373,12 +374,19 @@ function mHandler(canvasNumber, cxt) {
 			});
 			socketForClient.emit('gameFinish', { 
 				winner: sessionStorage.getItem('uid'),
-				roomId: sessionStorage.getItem("roomId")
+				roomId: sessionStorage.getItem("roomId"),
+				tie: false
 			});
 			clearCanvas();
 		}
 		if(squaresFilled==9) {
 			swal("Tie","Game is over");
+			socketForClient.emit('gameFinish', { 
+				winner: sessionStorage.getItem('uid'),
+				roomId: sessionStorage.getItem("roomId"),
+				tie: true
+			});
+			clearCanvas();
 		} else {
 			socketForClient.emit('swapPlayer', {                    //swapPlayer emitted
 				pos: canvasNumber,
@@ -395,6 +403,7 @@ function mHandler(canvasNumber, cxt) {
 
 
 function refreshList() {
+	//fetch('http://localhost:2121/api/players')
 	fetch('https://tic-tac-toe-pwa.herokuapp.com/api/players')
 	.then( (response)=> {
 		return response.json();

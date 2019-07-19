@@ -185,21 +185,26 @@ io.on('connection', function(socket) {
     });
 
     var playerLooser = null;
+    // data [winner, roomId, tie]
     socket.on('gameFinish', (data)=> {
         console.log("game number: "+data.roomId+" finished");
-        rooms.forEach(room => {
-            if(room.roomId === data.roomId) {
-                if(data.winner == room.player1id) {
-                    console.log("looser is: "+room.player1Name);
-                    io.in(room.roomId).emit('lost', {uid: room.player2id});
-                    playerLooser = room.player2id;
-                } else {
-                    console.log("looser is: "+room.player1Name);
-                    io.in(room.roomId).emit('lost', {uid: room.player1id});
-                    playerLooser = room.player1id;
+        if(data.tie) {
+            io.in(data.roomId).emit('lost', {uid: null});
+        } else {
+            rooms.forEach(room => {
+                if(room.roomId === data.roomId) {
+                    if(data.winner == room.player1id) {
+                        console.log("looser is: "+room.player1Name);
+                        io.in(room.roomId).emit('lost', {uid: room.player2id});
+                        playerLooser = room.player2id;
+                    } else {
+                        console.log("looser is: "+room.player1Name);
+                        io.in(room.roomId).emit('lost', {uid: room.player1id});
+                        playerLooser = room.player1id;
+                    }
                 }
-            }
-        });
+            });
+        }
         // rolling out updated session variables
         players.forEach(player=> {
             if(player.id === data.winner) {
