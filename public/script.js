@@ -1,6 +1,6 @@
 //initializing global variables
-//const socketForClient = io.connect('http://localhost:2121');
-const socketForClient = io.connect('https://tic-tac-toe-pwa.herokuapp.com'); // using socket object 
+const socketForClient = io.connect('http://localhost:2121');
+//const socketForClient = io.connect('https://tic-tac-toe-pwa.herokuapp.com'); // using socket object 
 var painted;
 var Xwin = 0;
 var Owin = 0;
@@ -42,7 +42,17 @@ window.addEventListener('online', ()=> {
 	console('you are offline');
 });
 window.addEventListener('offline', ()=> {
-	alert('you are offline');
+	swal({
+		title: "Oops",
+		text: "You are offline. Check your connection",
+		icon: "./images/noSignal.png",
+		iconSize: "100x80",
+		button: "Not your problem"
+	}).then( ()=> {
+		setTimeout(()=> {
+			location.reload();
+		}, 600)
+	})
 });
 
 //when live players are clicked
@@ -403,8 +413,8 @@ function mHandler(canvasNumber, cxt) {
 
 
 function refreshList() {
-	//fetch('http://localhost:2121/api/players')
-	fetch('https://tic-tac-toe-pwa.herokuapp.com/api/players')
+	fetch('http://localhost:2121/api/players')
+	//fetch('https://tic-tac-toe-pwa.herokuapp.com/api/players')
 	.then( (response)=> {
 		return response.json();
 	}).then( (data)=> {

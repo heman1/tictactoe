@@ -29,18 +29,18 @@ app.use(logger);
 var PORT = process.env.PORT || 2121;
 server.listen(PORT, ()=> console.log(`server running on port ${PORT}`));
 
-
+//=========LISTEN TO SOCKET EVENTS============//
 io.on('connection', function(socket) {
     console.log("new player connected");
 
-    //on disconnection
+    //on disconnection 
     socket.on('disconnect', ()=> {
         console.log(socket.id+ " got disconnected");
         var i = players.length;
             while(i--) {
                 if( players[i] && players[i].hasOwnProperty('sid') && (players[i]['sid'] === socket.id ) ){ 
                     console.log("deleting.. "+players[i].name);
-                    socket.broadcast.emit('playerLeft', {id: players[i].id});
+                        socket.broadcast.emit('playerLeft', {id: players[i].id});
                     players.splice(i,1);
                 }
             }
@@ -187,24 +187,26 @@ io.on('connection', function(socket) {
     var playerLooser = null;
     // data [winner, roomId, tie]
     socket.on('gameFinish', (data)=> {
-        console.log("game number: "+data.roomId+" finished");
-        if(data.tie) {
-            io.in(data.roomId).emit('lost', {uid: null});
-        } else {
-            rooms.forEach(room => {
-                if(room.roomId === data.roomId) {
-                    if(data.winner == room.player1id) {
-                        console.log("looser is: "+room.player1Name);
+    console.log("game number: "+data.roomId+" finished");
+        rooms.forEach(room => {
+            if(room.roomId === data.roomId) {
+                if(data.winner == room.player1id) {
+                    console.log("looser is: "+room.player1Name);
+                    if(data.tie)
+                        io.in(room.roomId).emit('lost', {uid: null});
+                    else
                         io.in(room.roomId).emit('lost', {uid: room.player2id});
-                        playerLooser = room.player2id;
-                    } else {
-                        console.log("looser is: "+room.player1Name);
+                    playerLooser = room.player2id;
+                } else {
+                    console.log("looser is: "+room.player1Name);
+                    if(data.tie)
+                        io.in(room.roomId).emit('lost', {uid: null});
+                    else
                         io.in(room.roomId).emit('lost', {uid: room.player1id});
-                        playerLooser = room.player1id;
-                    }
+                    playerLooser = room.player1id;
                 }
-            });
-        }
+            }
+        });
         // rolling out updated session variables
         players.forEach(player=> {
             if(player.id === data.winner) {

@@ -20,6 +20,7 @@
 				
 				reg.addEventListener('updateFound', ()=> {
 					reg.installing.addEventListener('statechange', ()=> {
+						console.log('finding an update');
 						if(this.state == 'installed') {
 							console.log("there is a new update!!");
 						}
@@ -96,7 +97,7 @@
 		</div>
 
 	<footer>
-	    <p>made by himanshu negi</p>
+	    <p>made by <a style="color: white;" href="https://github.com/heman1/tictactoe">himanshu negi</a></p>
 	</footer>
 	
 	<script defer src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
