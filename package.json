@@ -16,7 +16,7 @@
   "author": "Himanshu Negi <hellohimanshunegi@gmail.com> (https://himanshunegi.ml)",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.16.4",
+    "express": "^4.18.2",
     "socket.io": "^2.2.0",
     "uuid": "^3.3.2"
   },
